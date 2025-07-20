@@ -6,14 +6,64 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   const pages = document.querySelectorAll(".page");
 
-  // Toggle mobile navigation
-  if (navToggle) {
-    navToggle.addEventListener("click", function () {
-      mainNav.classList.toggle("active");
-    });
+  const translationCache = {};
+  let currentLanguage = localStorage.getItem("language") || "en";
+
+  // Language map
+  const languageMap = {
+    EN: "en",
+    BS: "bs",
+    TR: "tr",
+    DE: "de",
+  };
+
+  // Load translations
+  async function loadTranslations(lang) {
+    if (translationCache[lang]) return translationCache[lang];
+
+    try {
+      const response = await fetch(`lang/${lang}.json`);
+      const translations = await response.json();
+      translationCache[lang] = translations;
+      return translations;
+    } catch (error) {
+      console.error("Failed to load translations:", error);
+      return loadTranslations("en"); // Fallback to English
+    }
   }
 
-  // Switch pages function
+  // Apply translations to the page
+  async function applyTranslations(lang) {
+    const translations = await loadTranslations(lang);
+
+    // Update text elements
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.dataset.i18n;
+      if (translations[key]) el.textContent = translations[key];
+    });
+
+    // Update nested objects (like prayer_names)
+    document.querySelectorAll("[data-i18n-nested]").forEach((el) => {
+      const [parent, child] = el.dataset.i18nNested.split(".");
+      if (translations[parent] && translations[parent][child]) {
+        el.textContent = translations[parent][child];
+      }
+    });
+
+    // Update active language indicator
+    document.querySelectorAll(".lang-option").forEach((option) => {
+      option.classList.remove("active");
+      if (option.dataset.lang === lang) {
+        option.classList.add("active");
+      }
+    });
+
+    // Save language preference
+    localStorage.setItem("language", lang);
+    currentLanguage = lang;
+  }
+
+  // Switch pages function with History API
   function switchPage(pageId) {
     // Hide all pages
     pages.forEach((page) => {
@@ -36,8 +86,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+    // Update browser history and URL
+    const pageTitle = `Halal Banja Luka - ${
+      pageId.charAt(0).toUpperCase() + pageId.slice(1)
+    }`;
+    const newUrl = `${window.location.pathname}?page=${pageId}`;
+
+    history.pushState({ page: pageId }, pageTitle, newUrl);
+    document.title = pageTitle;
+
     mainNav.classList.remove("active");
     window.scrollTo(0, 0);
+  }
+
+  // Handle back/forward navigation
+  window.addEventListener("popstate", function (event) {
+    if (event.state && event.state.page) {
+      switchPage(event.state.page);
+    } else {
+      switchPage("home");
+    }
+  });
+
+  // Initialize page from URL
+  function initializePageFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get("page");
+
+    if (pageParam && document.getElementById(pageParam)) {
+      switchPage(pageParam);
+    } else {
+      switchPage("home");
+    }
+  }
+
+  // Initialize translations and page
+  applyTranslations(currentLanguage);
+  initializePageFromURL();
+
+  // Language selector event
+  document.querySelectorAll(".lang-option").forEach((option) => {
+    option.addEventListener("click", function () {
+      const lang = this.dataset.lang;
+      applyTranslations(lang);
+    });
+  });
+
+  // Toggle mobile navigation
+  if (navToggle) {
+    navToggle.addEventListener("click", function () {
+      mainNav.classList.toggle("active");
+    });
   }
 
   // Add click listeners to nav links
