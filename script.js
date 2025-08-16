@@ -150,46 +150,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Prayer Time Highlighting
+  // Prayer Time Highlighting (uses live times from DOM)
   function updateActivePrayer() {
     const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const currentTime = hours * 60 + minutes;
-
-    const prayerTimes = [
-      { id: "fajr", time: 3 * 60 + 45 },
-      { id: "sunrise", time: 5 * 60 + 20 },
-      { id: "dhuhr", time: 12 * 60 + 45 },
-      { id: "asr", time: 16 * 60 + 30 },
-      { id: "maghrib", time: 19 * 60 + 50 },
-      { id: "isha", time: 21 * 60 + 15 },
-    ];
-
-    document.querySelectorAll(".prayer-time").forEach((time) => {
-      time.classList.remove("active");
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    document.querySelectorAll(".prayer-times").forEach((container) => {
+      const times = [];
+      container.querySelectorAll(".prayer-time").forEach((el) => {
+        const hourEl = el.querySelector(".prayer-hour");
+        if (hourEl) {
+          const [h, m] = hourEl.textContent.split(":").map(Number);
+          if (!isNaN(h) && !isNaN(m)) {
+            times.push(h * 60 + m);
+          } else {
+            times.push(null);
+          }
+        } else {
+          times.push(null);
+        }
+      });
+      // Remove previous highlight
+      container
+        .querySelectorAll(".prayer-time")
+        .forEach((el) => el.classList.remove("active"));
+      // Find next prayer
+      let idx = times.findIndex((t) => t !== null && currentTime < t);
+      if (idx === -1) idx = 0; // After last prayer, highlight Fajr
+      const prayerEls = container.querySelectorAll(".prayer-time");
+      if (prayerEls[idx]) prayerEls[idx].classList.add("active");
     });
-
-    let nextPrayer = null;
-    for (const prayer of prayerTimes) {
-      if (currentTime < prayer.time) {
-        nextPrayer = prayer;
-        break;
-      }
-    }
-
-    if (!nextPrayer) {
-      nextPrayer = prayerTimes[0]; // If after Isha, show Fajr
-    }
-
-    document
-      .querySelector(
-        `.prayer-time:nth-child(${prayerTimes.indexOf(nextPrayer) + 1})`
-      )
-      ?.classList.add("active");
   }
 
-  updateActivePrayer();
+  // Wait for prayer times to be loaded, then start highlighting
+  setTimeout(updateActivePrayer, 500); // Initial highlight after fetch
   setInterval(updateActivePrayer, 60000); // Update every minute
 
   // Tab Switching
@@ -215,21 +208,42 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Prayer Time Fetching (Optional)
-async function fetchPrayerTimes() {
+// Fetch and display live prayer times for Banja Luka
+async function fetchAndDisplayPrayerTimes() {
   try {
-    const response = await fetch("https://api.vaktija.ba/vaktija/v1/77");
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
+    const response = await fetch("https://api.vaktija.ba/vaktija/v1/1");
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const data = await response.json();
-    console.log("Prayer Times:", data);
-    return data;
+    // data.vakat: [fajr, sunrise, dhuhr, asr, maghrib, isha]
+    // Update all .prayer-times blocks on the page
+    document.querySelectorAll(".prayer-times").forEach((container) => {
+      const vakat = data.vakat;
+      const prayerOrder = [
+        "Fajr",
+        "Sunrise",
+        "Dhuhr",
+        "Asr",
+        "Maghrib",
+        "Isha",
+      ];
+      container.querySelectorAll(".prayer-time").forEach((el, idx) => {
+        const nameEl = el.querySelector(".prayer-name");
+        const hourEl = el.querySelector(".prayer-hour");
+        if (nameEl && hourEl && vakat[idx]) {
+          hourEl.textContent = vakat[idx];
+        }
+      });
+    });
+    // Optionally update Hijri date if present
+    document.querySelectorAll(".hijri-date").forEach((el) => {
+      if (data.datum && data.datum[0]) {
+        el.textContent = data.datum[0];
+      }
+    });
   } catch (error) {
     console.error("Error fetching prayer times:", error);
   }
 }
 
-// Call if needed
-// fetchPrayerTimes();
+// Fetch prayer times on page load
+document.addEventListener("DOMContentLoaded", fetchAndDisplayPrayerTimes);
