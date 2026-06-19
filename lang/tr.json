@@ -121,5 +121,14 @@
   "city_center": "Şehir Merkezi",
   "natural_wonder": "Doğa Harikası",
   "free_entry": "Ücretsiz Giriş",
-  "map": "Harita"
+  "map": "Harita",
+  "eat_title": "Banja Luka'da Helal Yemek",
+  "eat_subtitle": "Şehirdeki sertifikalı restoranları, kafeleri ve gıda mağazalarını keşfedin",
+  "muslim_food_places": "Helal Yemek Mekanları",
+  "see_title": "Banja Luka'yı Keşfedin",
+  "see_subtitle": "İslami alanları, tarihi yerleri ve doğal güzellikleri keşfedin",
+  "attractions_activities": "Turistik Yerler ve Aktiviteler",
+  "pray_title": "Banja Luka'da İbadet",
+  "pray_subtitle": "Şehirdeki namaz vakitlerini, camileri ve ibadet alanlarını bulun",
+  "mosques_prayer_rooms": "Camiler ve İbadet Odaları"
 }

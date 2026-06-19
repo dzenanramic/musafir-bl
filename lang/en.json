@@ -121,5 +121,14 @@
   "city_center": "City Center",
   "natural_wonder": "Natural Wonder",
   "free_entry": "Free Entry",
-  "map": "Map"
+  "map": "Map",
+  "eat_title": "Muslim Dining in Banja Luka",
+  "eat_subtitle": "Discover certified good restaurants, cafes and food stores across the city",
+  "muslim_food_places": "Muslim Food Places",
+  "see_title": "Explore Banja Luka",
+  "see_subtitle": "Discover Islamic sites, historical landmarks, and natural attractions",
+  "attractions_activities": "Attractions & Activities",
+  "pray_title": "Prayer in Banja Luka",
+  "pray_subtitle": "Find prayer times, mosques, and prayer facilities across the city",
+  "mosques_prayer_rooms": "Mosques & Prayer Rooms"
 }

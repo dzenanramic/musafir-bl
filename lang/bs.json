@@ -121,5 +121,14 @@
   "city_center": "Gradski centar",
   "natural_wonder": "Prirodno čudo",
   "free_entry": "Besplatan ulaz",
-  "map": "Mapa"
+  "map": "Mapa",
+  "eat_title": "Muslimanska hrana u Banjoj Luci",
+  "eat_subtitle": "Otkrijte provjerene restorane, kafiće i prodavnice hrane širom grada",
+  "muslim_food_places": "Muslimanska mjesta za hranu",
+  "see_title": "Istražite Banja Luku",
+  "see_subtitle": "Otkrijte islamske lokalitete, historijske znamenitosti i prirodne atrakcije",
+  "attractions_activities": "Atrakcije i aktivnosti",
+  "pray_title": "Namaz u Banjoj Luci",
+  "pray_subtitle": "Pronađite vremena namaza, džamije i molitvene prostorije širom grada",
+  "mosques_prayer_rooms": "Džamije i molitvene prostorije"
 }

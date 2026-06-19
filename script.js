@@ -216,9 +216,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Add click + touch listeners to nav links
-  // Using touchend ensures reliable navigation on mobile where
-  // synthesized click events can be dropped due to stacking contexts
+  // On mobile, touchend fires even after scrolling, causing accidental navigation.
+  // Solution: track touch start position and only navigate when it's a tap (minimal movement).
   navLinks.forEach((link) => {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
     function handleNavAction(e) {
       const pageId = link.getAttribute("data-page");
       if (pageId) {
@@ -227,12 +230,34 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Desktop / fallback
     link.addEventListener("click", handleNavAction);
 
-    // Mobile: touchend fires before synthesized click;
-    // using non-passive to allow preventDefault
-    link.addEventListener("touchend", handleNavAction, { passive: false });
+    // Track touch start position to distinguish tap from scroll
+    link.addEventListener(
+      "touchstart",
+      function (e) {
+        const touch = e.changedTouches[0];
+        touchStartX = touch.screenX;
+        touchStartY = touch.screenY;
+      },
+      { passive: true },
+    );
+
+    // Only navigate on touchend if finger didn't move much (i.e. it's a tap, not a scroll)
+    link.addEventListener(
+      "touchend",
+      function (e) {
+        const touch = e.changedTouches[0];
+        const deltaX = Math.abs(touch.screenX - touchStartX);
+        const deltaY = Math.abs(touch.screenY - touchStartY);
+
+        // If finger moved more than 10px, it was a scroll/swipe — do not navigate
+        if (deltaX > 10 || deltaY > 10) return;
+
+        handleNavAction(e);
+      },
+      { passive: false },
+    );
   });
 
   // ========================================
