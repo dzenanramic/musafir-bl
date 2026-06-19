@@ -26,7 +26,7 @@
   "nav_home": "Startseite",
   "nav_eat": "Essen",
   "nav_see": "Sehenswürdigkeiten",
-  "nav_pray": "Betten",
+  "nav_pray": "Gebet",
   "nav_essentials": "Grundlegendes",
   "footer_about": "Ihr vertrauenswürdiger Führer für muslimische Reisende in Banja Luka, Bosnien und Herzegowina.",
   "footer_links": "Schnellzugriff",
@@ -60,7 +60,7 @@
   "res_desc_podlipom": "Ćevapi und Grillgerichte mit Halal-Fleisch aus der Metzgerei Iriskic. *Hinweis: Vor Ort wird Alkohol ausgeschenkt.*",
   "res_desc_tesnjak": "Muslimfreundliche Metzgerei mit Fast-Food-Angebot.",
   "res_desc_biser": "Außerhalb des Zentrums gelegen, bietet diese Bäckerei muslimfreundliche Backwaren an und ist 24/7 geöffnet.",
-  "muslim_friendly": "Halal",
+  "muslim_friendly": "Muslimfreundlich",
   "verified_meat": "Verifiziertes Fleisch",
   "gospodska": "Gospodska Straße",
   "gospodska_desc": "Belebte Fußgängerzone mit österreichisch-ungarischer Architektur, Cafés und Boutiquen.",
@@ -116,5 +116,10 @@
   "emergency_ambulance": "Rettungsdienst: 124",
   "emergency_fire": "Feuerwehr: 123",
   "emergency_community": "Islamische Gemeinschaft: +387 51 432 156",
-  "save_contacts": "Kontakte speichern"
+  "save_contacts": "Kontakte speichern",
+  "historical_site": "Historische Stätte",
+  "city_center": "Stadtzentrum",
+  "natural_wonder": "Naturwunder",
+  "free_entry": "Freier Eintritt",
+  "map": "Karte"
 }

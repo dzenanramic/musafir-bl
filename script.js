@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const navToggle = document.getElementById("navToggle");
   const mainNav = document.getElementById("mainNav");
+  const header = document.querySelector("header");
   const navLinks = document.querySelectorAll(
-    ".nav-link, .mobile-nav .nav-item, .view-all, .footer-links a, .explore-more-btn"
+    ".nav-link, .mobile-nav .nav-item, .view-all, .footer-links a, .explore-more-btn",
   );
   const pages = document.querySelectorAll(".page");
 
@@ -17,7 +18,88 @@ document.addEventListener("DOMContentLoaded", function () {
     DE: "de",
   };
 
-  // Load translations
+  // ========================================
+  // HEADER SCROLL EFFECT
+  // ========================================
+  const headerWrapper = document.querySelector(".header-wrapper");
+
+  function handleScroll() {
+    if (window.scrollY > 10) {
+      headerWrapper.classList.add("scrolled");
+    } else {
+      headerWrapper.classList.remove("scrolled");
+    }
+  }
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+
+  // ========================================
+  // MOBILE NAV TOGGLE
+  // ========================================
+  // Create overlay element
+  const navOverlay = document.createElement("div");
+  navOverlay.className = "nav-overlay";
+  document.body.appendChild(navOverlay);
+
+  // Convert hamburger icon to three lines
+  const toggleIcon = navToggle.querySelector("i");
+  if (toggleIcon) {
+    // Replace Font Awesome icon with custom hamburger lines
+    const lines = document.createElement("div");
+    lines.className = "hamburger-lines";
+    for (let i = 0; i < 3; i++) {
+      const line = document.createElement("span");
+      line.className = "hamburger-line";
+      lines.appendChild(line);
+    }
+    toggleIcon.replaceWith(lines);
+  }
+
+  // Move #mainNav to body on mobile to fix Chrome bug where
+  // position:fixed inside position:sticky breaks z-index stacking.
+  // On mobile: nav at body level -> fixed z-index:102 > overlay z-index:101
+  // On desktop: nav back in header-wrapper -> flex layout works normally
+  function repositionNav() {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile && mainNav.parentElement !== document.body) {
+      document.body.appendChild(mainNav);
+    } else if (!isMobile && mainNav.parentElement !== headerWrapper) {
+      headerWrapper.appendChild(mainNav);
+    }
+  }
+  repositionNav();
+  window.addEventListener("resize", repositionNav);
+
+  function toggleNav(open) {
+    const isActive =
+      open !== undefined ? open : !mainNav.classList.contains("active");
+    mainNav.classList.toggle("active", isActive);
+    navOverlay.classList.toggle("active", isActive);
+    navToggle.classList.toggle("active", isActive);
+    document.body.style.overflow = isActive ? "hidden" : "";
+  }
+
+  if (navToggle) {
+    navToggle.addEventListener("click", function () {
+      toggleNav();
+    });
+  }
+
+  navOverlay.addEventListener("click", function () {
+    toggleNav(false);
+  });
+
+  // Close nav on Escape
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && mainNav.classList.contains("active")) {
+      toggleNav(false);
+    }
+  });
+
+  // ========================================
+  // TRANSLATIONS
+  // ========================================
   async function loadTranslations(lang) {
     if (translationCache[lang]) return translationCache[lang];
 
@@ -32,17 +114,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Apply translations to the page
   async function applyTranslations(lang) {
     const translations = await loadTranslations(lang);
 
-    // Update text elements
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.dataset.i18n;
       if (translations[key]) el.textContent = translations[key];
     });
 
-    // Update nested objects (like prayer_names)
     document.querySelectorAll("[data-i18n-nested]").forEach((el) => {
       const [parent, child] = el.dataset.i18nNested.split(".");
       if (translations[parent] && translations[parent][child]) {
@@ -50,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Update active language indicator
     document.querySelectorAll(".lang-option").forEach((option) => {
       option.classList.remove("active");
       if (option.dataset.lang === lang) {
@@ -58,25 +136,29 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Save language preference
     localStorage.setItem("language", lang);
     currentLanguage = lang;
   }
 
-  // Switch pages function with History API
+  // ========================================
+  // PAGE SWITCHING
+  // ========================================
   function switchPage(pageId) {
-    // Hide all pages
+    // Guard: if already on this page, just close nav and return
+    const targetPage = document.getElementById(pageId);
+    if (targetPage?.classList.contains("active")) {
+      toggleNav(false);
+      return;
+    }
+
     pages.forEach((page) => {
       page.classList.remove("active");
     });
 
-    // Show target page
-    const targetPage = document.getElementById(pageId);
     if (targetPage) {
       targetPage.classList.add("active");
     }
 
-    // Update active nav links
     document
       .querySelectorAll(".nav-link, .mobile-nav .nav-item")
       .forEach((link) => {
@@ -86,7 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-    // Update browser history and URL
     const pageTitle = `Halal Banja Luka - ${
       pageId.charAt(0).toUpperCase() + pageId.slice(1)
     }`;
@@ -95,8 +176,10 @@ document.addEventListener("DOMContentLoaded", function () {
     history.pushState({ page: pageId }, pageTitle, newUrl);
     document.title = pageTitle;
 
-    mainNav.classList.remove("active");
-    window.scrollTo(0, 0);
+    // Close mobile nav on page change
+    toggleNav(false);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   // Handle back/forward navigation
@@ -132,25 +215,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Toggle mobile navigation
-  if (navToggle) {
-    navToggle.addEventListener("click", function () {
-      mainNav.classList.toggle("active");
-    });
-  }
-
-  // Add click listeners to nav links
+  // Add click + touch listeners to nav links
+  // Using touchend ensures reliable navigation on mobile where
+  // synthesized click events can be dropped due to stacking contexts
   navLinks.forEach((link) => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const pageId = this.getAttribute("data-page");
+    function handleNavAction(e) {
+      const pageId = link.getAttribute("data-page");
       if (pageId) {
+        e.preventDefault();
         switchPage(pageId);
       }
-    });
+    }
+
+    // Desktop / fallback
+    link.addEventListener("click", handleNavAction);
+
+    // Mobile: touchend fires before synthesized click;
+    // using non-passive to allow preventDefault
+    link.addEventListener("touchend", handleNavAction, { passive: false });
   });
 
-  // Prayer Time Highlighting (uses live times from DOM)
+  // ========================================
+  // PRAYER TIME HIGHLIGHTING
+  // ========================================
   function updateActivePrayer() {
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
@@ -169,23 +256,25 @@ document.addEventListener("DOMContentLoaded", function () {
           times.push(null);
         }
       });
-      // Remove previous highlight
+
       container
         .querySelectorAll(".prayer-time")
         .forEach((el) => el.classList.remove("active"));
-      // Find next prayer
+
       let idx = times.findIndex((t) => t !== null && currentTime < t);
-      if (idx === -1) idx = 0; // After last prayer, highlight Fajr
+      if (idx === -1) idx = 0;
+
       const prayerEls = container.querySelectorAll(".prayer-time");
       if (prayerEls[idx]) prayerEls[idx].classList.add("active");
     });
   }
 
-  // Wait for prayer times to be loaded, then start highlighting
-  setTimeout(updateActivePrayer, 500); // Initial highlight after fetch
-  setInterval(updateActivePrayer, 60000); // Update every minute
+  setTimeout(updateActivePrayer, 500);
+  setInterval(updateActivePrayer, 60000);
 
-  // Tab Switching
+  // ========================================
+  // TAB SWITCHING
+  // ========================================
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", function () {
       const parent = this.parentElement;
@@ -196,7 +285,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Language Selector
+  // ========================================
+  // LANGUAGE SELECTOR (footer)
+  // ========================================
   document.querySelectorAll(".lang-option").forEach((option) => {
     option.addEventListener("click", function () {
       const parent = this.parentElement;
@@ -208,14 +299,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Fetch and display live prayer times for Banja Luka
+// ========================================
+// FETCH PRAYER TIMES
+// ========================================
 async function fetchAndDisplayPrayerTimes() {
   try {
     const response = await fetch("https://api.vaktija.ba/vaktija/v1/1");
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const data = await response.json();
-    // data.vakat: [fajr, sunrise, dhuhr, asr, maghrib, isha]
-    // Update all .prayer-times blocks on the page
+
     document.querySelectorAll(".prayer-times").forEach((container) => {
       const vakat = data.vakat;
       const prayerOrder = [
@@ -234,7 +326,7 @@ async function fetchAndDisplayPrayerTimes() {
         }
       });
     });
-    // Optionally update Hijri date if present
+
     document.querySelectorAll(".hijri-date").forEach((el) => {
       if (data.datum && data.datum[0]) {
         el.textContent = data.datum[0];
@@ -245,5 +337,4 @@ async function fetchAndDisplayPrayerTimes() {
   }
 }
 
-// Fetch prayer times on page load
 document.addEventListener("DOMContentLoaded", fetchAndDisplayPrayerTimes);

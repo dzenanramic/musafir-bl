@@ -1,5 +1,5 @@
 {
-  "app_name": "HalalBanjaLuka",
+  "app_name": "MusafirBanjaLuka",
   "home_title": "Banja Luka için Eksiksiz Helal Rehberiniz",
   "home_subtitle": "Bosna'nın güzel kuzey şehrinde helal yiyecekler, ibadet yerleri ve Müslüman dostu cazibe merkezlerini bulun.",
   "restaurants": "Helal Restoranlar",
@@ -60,7 +60,7 @@
   "res_desc_podlipom": "Iriskic kasabından helal etle hazırlanan ćevapi ve ızgara yemekleri. *Not: Mekanda alkol servis edilmektedir.*",
   "res_desc_tesnjak": "Müslüman dostu kasap ve fast food.",
   "res_desc_biser": "Şehir merkezinin dışında bulunan bu fırın, helal dostu fırın ürünleri sunuyor ve 7/24 açık.",
-  "muslim_friendly": "Helal",
+  "muslim_friendly": "Helal Dostu",
   "verified_meat": "Doğrulanmış Et",
   "gospodska": "Gospodska Caddesi",
   "gospodska_desc": "Avusturya-Macaristan mimarisi, kafeler ve butiklerle dolu hareketli bir yaya bölgesi.",
@@ -116,5 +116,10 @@
   "emergency_ambulance": "Ambulans: 124",
   "emergency_fire": "İtfaiye: 123",
   "emergency_community": "İslam Topluluğu: +387 51 432 156",
-  "save_contacts": "Kişileri Kaydet"
+  "save_contacts": "Kişileri Kaydet",
+  "historical_site": "Tarihi Yer",
+  "city_center": "Şehir Merkezi",
+  "natural_wonder": "Doğa Harikası",
+  "free_entry": "Ücretsiz Giriş",
+  "map": "Harita"
 }

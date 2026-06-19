@@ -116,5 +116,10 @@
   "emergency_ambulance": "Ambulance: 124",
   "emergency_fire": "Fire Department: 123",
   "emergency_community": "Islamic Community: +387 51 432 156",
-  "save_contacts": "Save Contacts"
+  "save_contacts": "Save Contacts",
+  "historical_site": "Historical Site",
+  "city_center": "City Center",
+  "natural_wonder": "Natural Wonder",
+  "free_entry": "Free Entry",
+  "map": "Map"
 }
