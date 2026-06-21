@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://halalbanjaluka.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://halalbanjaluka.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="bs" href="https://halalbanjaluka.com/?lang=bs" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://halalbanjaluka.com/?lang=tr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://halalbanjaluka.com/?lang=de" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://halalbanjaluka.com/eat.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://halalbanjaluka.com/eat.html?lang=en" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://halalbanjaluka.com/see.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://halalbanjaluka.com/see.html?lang=en" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://halalbanjaluka.com/pray.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://halalbanjaluka.com/pray.html?lang=en" />
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://halalbanjaluka.com/essentials.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://halalbanjaluka.com/essentials.html?lang=en" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

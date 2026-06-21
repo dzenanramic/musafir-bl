@@ -168,9 +168,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-    const pageTitle = `Halal Banja Luka - ${
-      pageId.charAt(0).toUpperCase() + pageId.slice(1)
-    }`;
+    const seoTitles = {
+      home: "Musafir Banja Luka - Muslim Travel Guide to Banja Luka, Bosnia",
+      eat: "Halal Restaurants in Banja Luka - Muslim Dining Guide",
+      see: "Muslim-Friendly Attractions in Banja Luka - See & Do",
+      pray: "Mosques & Prayer Times in Banja Luka - Muslim Prayer Guide",
+      essentials: "Essential Travel Guide for Muslims in Banja Luka",
+    };
+    const pageTitle =
+      seoTitles[pageId] ||
+      `Halal Banja Luka - ${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`;
     const newUrl = `${window.location.pathname}?page=${pageId}`;
 
     history.pushState({ page: pageId }, pageTitle, newUrl);
